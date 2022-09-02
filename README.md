@@ -10,6 +10,6 @@ This project is implemented by using;
 
 # Running Project
 - Open the solution with Visual Studio 2022.
-- Set Acme.Payment.RestApi as start up project.
+- Set Acme.Payment.RestApi as startup project.
 - Launch the project.
 - Explore the Swagger UI.
