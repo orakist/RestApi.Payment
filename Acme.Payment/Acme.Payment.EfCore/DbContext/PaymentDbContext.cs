@@ -25,23 +25,34 @@ public class PaymentDbContext : Microsoft.EntityFrameworkCore.DbContext
     {
         _propertySetter = propertySetter;
         ChangeTracker.Tracked += ChangeTracker_Tracked;
+        ChangeTracker.StateChanged += ChangeTrackerOnStateChanged;
+    }
+
+    private void ChangeTrackerOnStateChanged(object sender, EntityStateChangedEventArgs e)
+    {
+        ApplyAuditingConcepts(e.NewState, e.Entry);
     }
 
     private void ChangeTracker_Tracked(object sender, EntityTrackedEventArgs e)
     {
-        switch (e.Entry.State)
+        ApplyAuditingConcepts(e.Entry.State, e.Entry);
+    }
+
+    private void ApplyAuditingConcepts(EntityState state, EntityEntry entry)
+    {
+        switch (state)
         {
             case EntityState.Added:
-                _propertySetter.SetIdProperty(e.Entry.Entity);
-                _propertySetter.SetCreationProperties(e.Entry.Entity);
+                _propertySetter.SetIdProperty(entry.Entity);
+                _propertySetter.SetCreationProperties(entry.Entity);
                 break;
             case EntityState.Modified:
-                _propertySetter.SetModificationProperties(e.Entry.Entity);
+                _propertySetter.SetModificationProperties(entry.Entity);
                 break;
             case EntityState.Deleted:
-                if (e.Entry.Entity is ISoftDelete)
-                    e.Entry.Reload();
-                _propertySetter.SetDeletionProperties(e.Entry.Entity);
+                if (entry.Entity is ISoftDelete)
+                    entry.Reload();
+                _propertySetter.SetDeletionProperties(entry.Entity);
                 break;
         }
     }
