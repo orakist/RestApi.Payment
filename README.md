@@ -7,3 +7,9 @@ This project is implemented by using;
 - Serilog
 - Swagger
 - Sample Api Test with xUnit
+
+# Running Project
+- Open the solution with Visual Studio 2022.
+- Set Acme.Payment.RestApi as start up project.
+- Launch the project.
+- Explore the Swagger UI.
